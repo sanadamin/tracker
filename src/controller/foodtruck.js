@@ -11,7 +11,7 @@ export default({ config, db }) => {
   let api = Router();
 
   // '/v1/foodtruck' - GET all food trucks
-  api.get('/', authenticate, (req, res) => {
+  api.get('/', (req, res) => {
     FoodTruck.find({}, (err, foodtrucks) => {
       if (err) {
         res.send(err);
@@ -31,7 +31,7 @@ export default({ config, db }) => {
   });
 
   // '/v1/foodtruck/add' - POST - add a food truck
-  api.post('/add', (req, res) => {
+  api.post('/add', authenticate, (req, res) => {
     let newFoodTruck = new FoodTruck();
     newFoodTruck.name = req.body.name;
     newFoodTruck.foodtype = req.body.foodtype;
@@ -48,7 +48,7 @@ export default({ config, db }) => {
   });
 
   // '/v1/foodtruck/:id' - DELETE - remove a food truck
-  api.delete('/:id', (req, res) => {
+  api.delete('/:id', authenticate, (req, res) => {
     FoodTruck.remove({
       _id: req.params.id
     }, (err, foodtruck) => {
@@ -67,7 +67,7 @@ export default({ config, db }) => {
   });
 
   // '/v1/foodtruck/:id' - PUT - update an existing record
-  api.put('/:id', (req, res) => {
+  api.put('/:id', authenticate, (req, res) => {
     FoodTruck.findById(req.params.id, (err, foodtruck) => {
       if (err) {
         res.send(err);
@@ -88,7 +88,7 @@ export default({ config, db }) => {
 
   // add a review by a specific foodtruck id
   // '/v1/foodtruck/reviews/add/:id'
-  api.post('/reviews/add/:id', (req, res) => {
+  api.post('/reviews/add/:id', authenticate, (req, res) => {
     FoodTruck.findById(req.params.id, (err, foodtruck) => {
       if (err) {
         res.send(err);
