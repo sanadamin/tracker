@@ -36,7 +36,8 @@ export default({ config, db }) => {
     newFoodTruck.name = req.body.name;
     newFoodTruck.foodtype = req.body.foodtype;
     newFoodTruck.avgcost = req.body.avgcost;
-    newFoodTruck.geometry.coordinates = req.body.geometry.coordinates;
+    newFoodTruck.geometry.coordinates.lat = req.body.geometry.coordinates.lat;
+    newFoodTruck.geometry.coordinates.long = req.body.geometry.coordinates.long;
 
     newFoodTruck.save(function(err) {
       if (err) {
@@ -74,7 +75,8 @@ export default({ config, db }) => {
       foodtruck.name = req.body.name;
       foodtruck.foodtype = req.body.foodtype;
       foodtruck.avgcost = req.body.avgcost;
-      foodtruck.geometry.coordinates = req.body.geometry.coordinates;
+      foodtruck.geometry.coordinates.lat = req.body.geometry.coordinates.lat;
+      foodtruck.geometry.coordinates.long = req.body.geometry.coordinates.long;
       foodtruck.save(function(err) {
         if (err) {
           res.send(err);
