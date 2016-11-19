@@ -15,6 +15,16 @@ export default ({ config, db }) => {
     res.status(200).send({ user: req.user });
   });
 
+  // '/v1/account/getall' ** REMOVE AFTER DEV
+  api.get('/getall', (req, res) => {
+    Account.find({}, (err, accounts) => {
+      if (err) {
+        send(err);
+      }
+      res.json(accounts);
+    });
+  });
+
   // '/v1/account/register'
   api.post('/register', (req, res) => {
     Account.register(new Account({ username: req.body.email}), req.body.password, function(err, account) {
