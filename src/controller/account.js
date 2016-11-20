@@ -29,7 +29,12 @@ export default ({ config, db }) => {
   api.post('/register', (req, res) => {
     Account.register(new Account({ username: req.body.email}), req.body.password, function(err, account) {
       if (err) {
-        return res.status(409).send(err);
+        if (err.name === "UserExistsError") {
+          console.log("User Exists");
+          return res.status(409).send(err);
+        } else {
+          return res.status(500).send(err);
+        }
       }
 
       passport.authenticate(
