@@ -49,19 +49,30 @@ export default({ config, db }) => {
 
   // '/v1/foodtruck/:id' - DELETE - remove a food truck
   api.delete('/:id', authenticate, (req, res) => {
-    FoodTruck.remove({
-      _id: req.params.id
-    }, (err, foodtruck) => {
+    FoodTruck.findById(req.params.id, (err, foodtruck) => {
       if (err) {
-        res.send(err);
+        res.status(500).send(err);
+        return;
       }
-      Review.remove({
-        foodtruck: req.params.id
-      }, (err, review) => {
+      if (foodtruck === null) {
+        res.status(404).send("FoodTruck Not Found")
+        return;
+      }
+      FoodTruck.remove({
+        _id: req.params.id
+      }, (err, foodtruck) => {
         if (err) {
-          res.send(err);
+          res.status(500).send(err);
+          return;
         }
-        res.json({message: "Food Truck and Reviews Successfully Removed"});
+        Review.remove({
+          foodtruck: req.params.id
+        }, (err, review) => {
+          if (err) {
+            res.send(err);
+          }
+          res.json({message: "Food Truck and Reviews Successfully Removed"});
+        });
       });
     });
   });
