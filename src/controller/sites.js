@@ -1,6 +1,6 @@
 import  mongoose from 'mongoose';
 import { Router } from 'express';
-import Site from '../model/sites';
+import Site from '../model/template';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import config from '../config';
@@ -17,8 +17,20 @@ export default ({ config, db }) => {
       res.json(sites);
     });
   });
-  api.get('/findsitename/:id', (req, res) => {
-    
+
+  api.get('/delete/:id',(req,res)=>{
+    Site.findByIdAndRemove(req.params.id,(err,res)=>{
+      if(err){
+          res.send(err);
+
+      }
+
+    });
+          res.send('deleted');
+  });
+
+  api.get('/findsitename1/:id', (req, res) => {
+
 
     Site.find({'sitename': new RegExp(req.params.id,'i')}, (err, sites) => {
       if (err) {
@@ -36,12 +48,13 @@ export default ({ config, db }) => {
       res.json(sites);
     });
   });
+
   api.post('/add', (req, res) => {
     let site = new Site();
     site.sitename = req.body.sitename;
     site.coordinates.lat = req.body.lat;
     site.coordinates.long = req.body.long;
-
+    site.siteid = req.body.siteid;
     site.save(function(err) {
       if (err) {
         res.send(err);
@@ -49,6 +62,27 @@ export default ({ config, db }) => {
       res.json({ message: 'site has been saved successfully' });
     });
   });
+
+  api.put('/updatesiteinfo',(req,res)=>{
+  Site.findOne({sitename:req.body.sitename},(err,site)=>{
+  if(err){
+  res.send(err);
+  }
+
+  site.siteload = req.body.dcload;
+  site.maincbraiting = req.body.phases;
+  site.rectifiertype = req.body.rectifier;
+  site.generatorcapacity = req.body.rectifierqty;
+  site.accapacity = req.body.ac;
+  site.save(function(err){
+  if(err){
+    res.send(err);
+  }
+  res.json({message:"Site Info Updated"});
+  });
+  });
+  });
+
 
   return api;
 }
